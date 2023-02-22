@@ -70,7 +70,9 @@ async function main() {
 	const temporaryDirectory = await fsPromises.mkdtemp("github-python-script-");
 	const scriptPath = path.join(temporaryDirectory, "script.py");
 	await fsPromises.writeFile(scriptPath, script);
+	process.stdout.write("::group::pip3 install pygithub\n");
 	await exec.exec("pip3", ["install", "pygithub"]);
+	process.stdout.write("::endgroup::\n");
 	const child_env = { ...process.env, ...{"GITHUB_TOKEN": inputs.get().token} }
 	await exec.exec("python3", [scriptPath], {env: child_env});
 }
