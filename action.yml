@@ -1,0 +1,27 @@
+name: GitHub Python Script
+description: An action similar to actions/github-script that lets you use Python as the scripting language.
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984
+      with:
+        python-version: 3.11
+    # We cannot reference $GITHUB_ACTION_PATH in the path to other actions, but we can symlink it to a known location and then reference that location.
+    # This ensures that the path to the action stays the same even if the runner starts storing actions in different locations or the action is being run from a fork with a different name.
+    - name: Configure Subactions
+      shell: sh
+      run: ln -s "$GITHUB_ACTION_PATH" "./../_github-python-script"
+    - name: Run Python Script
+      uses: ./../_github-python-script/subactions/run/
+      with:
+        token: ${{ inputs.token }}
+        script: ${{ inputs.script }}
+inputs:
+  token:
+    description: A token for GitHub API access.
+    required: true
+    default: ${{ github.token }}
+  script:
+    description: The Python script to run.
+    required: true
