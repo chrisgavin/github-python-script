@@ -1,0 +1,12 @@
+name: GitHub Python Script - Run
+description: Runs the Python script.
+runs:
+  using: node16
+  main: ./../../bootstrap-shim.js
+inputs:
+  token:
+    description: A token for GitHub API access.
+    required: true
+  script:
+    description: The Python script to run.
+    required: true
